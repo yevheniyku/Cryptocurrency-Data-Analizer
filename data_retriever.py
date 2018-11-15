@@ -10,12 +10,14 @@ marketsList = []
 marketHistoryURL = 'https://bittrex.com/api/v1.1/public/getmarkethistory?market='
 
 ################################################################################
-#
+# Obtiene el historial de las ordenesde compra/venta de las criptomonedas
+# lo parsea y guarda en un archivo temporal
 ################################################################################
 def retrieveMarketHistory():
     global marketsList
 
     with open('marketsHistory.temp', 'a+') as temp:
+        # se hace una peticion a la API de Bittrex por cada marketname
         for item in marketsList:
             temp.write(item + '\n')
             response = requests.get(marketHistoryURL + item)
@@ -39,6 +41,9 @@ def parseMarkets():
     for item in data["result"]:
         marketsList.append(item['MarketName'])
 
+    # borra el archivo temporal del sistema
+    os.remove("markets.temp")
+
 ################################################################################
 # Pide una lista de markets a la API de Bittrex y lo guarda en un archivo
 # temporal
@@ -51,6 +56,7 @@ def retrieveMarkets():
         print("Ha ocurrido un error a la hora de obtener los markets\n")
         sys.exit()
     else:
+        # guarda los mercados disponibles en un archivo temporal
         with open('markets.temp', 'w') as temporal:
             data = json.loads(markets.text)
             print(json.dumps(data, indent=4, sort_keys=True), file=temporal)
@@ -58,7 +64,7 @@ def retrieveMarkets():
 def main():
     retrieveMarkets()
     parseMarkets()
-    os.remove("markets.temp")
+    #while(1):
     retrieveMarketHistory()
 
 
