@@ -2,6 +2,7 @@ import json
 import csv
 import sys
 import os
+import time
 #pip install requests
 import requests
 
@@ -19,7 +20,6 @@ def retrieveMarketHistory():
     with open('marketsHistory.temp', 'a+') as temp:
         # se hace una peticion a la API de Bittrex por cada marketname
         for item in marketsList:
-            temp.write(item + '\n')
             response = requests.get(marketHistoryURL + item)
 
             if(response.status_code != 200):
@@ -27,7 +27,11 @@ def retrieveMarketHistory():
                 sys.exit()
             else:
                 data = json.loads(response.text)
-                print(json.dumps(data, indent=4, sort_keys=True), file=temp)
+                for i in data["result"]:
+                    rowPart1 = item + '\t' + i['OrderType'] + '\t' + str(i['Price'])
+                    rowPart2 = rowPart1 + '\t' + str(i['Quantity'])
+                    row = rowPart2 +'\t '+ i['TimeStamp'] + '\n'
+                    temp.write(row)
 
 ################################################################################
 # Parsea el archivo temporal y crea una lista con los markets disponibles en
@@ -64,8 +68,9 @@ def retrieveMarkets():
 def main():
     retrieveMarkets()
     parseMarkets()
-    #while(1):
-    retrieveMarketHistory()
+    while(1):
+        retrieveMarketHistory()
+        time.sleep(120)
 
 
 if __name__ == "__main__":
