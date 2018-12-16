@@ -12,42 +12,38 @@ marketLastTrades = [('', '')]
 firstLoop = True
 
 ################################################################################
-#
+# Escribe una fila en el csv
 ################################################################################
-def writeRow(market, i, temp):
-    rowPart1 = market + '\t' + i['OrderType'] + '\t' + str(i['Price'])
-    rowPart2 = rowPart1 + '\t' + str(i['Quantity'])
-    row = rowPart2 +'\t '+ i['TimeStamp'] + '\n'
-    temp.write(row)
+def writeRow(writer, market, i, temp):
+    row = [market, i['OrderType'], str(i['Price']), str(i['Quantity']), i['TimeStamp']]
+    writer.writerow(row)
 
 ################################################################################
-#
+# Recorre json de respuesta y escribe las compras/ventas en el csv si
+# la compra/venta es posterior a la ultima guardada
 ################################################################################
-def loopsTrades(market, data, file, timeStamp, count):
+def loopsTrades(writer, market, data, file, timeStamp, count):
     global marketLastTrades
 
     for i in data['result']:
         if(i['TimeStamp'] > marketLastTrades[count+1][1]):
-            writeRow(market, i, file)
+            writeRow(writer, market, i, file)
 
     marketLastTrades[count] = (market, timeStamp)
 
 ################################################################################
-#
+# Recorre json de respuesta y escribe las compras/ventas en el csv
 ################################################################################
-def firstLoopTrades(market, data, file, timeStamp):
+def firstLoopTrades(writer, market, data, file, timeStamp):
     global marketLastTrades
 
     marketLastTrades.append((market, timeStamp))
 
     for i in data['result']:
-        writeRow(market, i, file)
+        writeRow(writer, market, i, file)
 
 ################################################################################
 # Obtiene el historial de las ordenesde compra/venta de las criptomonedas
-# lo parsea y guarda en un archivo temporal.
-# Para prevenir la repeticion de las ventas (existen markets muy poco activos)
-# apuntamos el timestamp de la ultima venta de cada mercado en una lista
 ################################################################################
 def retrieveMarketHistory():
     global marketsList
@@ -57,6 +53,7 @@ def retrieveMarketHistory():
     count = 0
 
     with open('marketsHistory.csv', 'a+') as file:
+        writer = csv.writer(file)
         # se hace una peticion a la API de Bittrex por cada marketname
         for market in marketsList:
             response = requests.get(marketHistoryURL + market)
@@ -70,18 +67,18 @@ def retrieveMarketHistory():
                 timeStamp = data['result'][0]['TimeStamp']
 
                 if(firstLoop == True):
-                    firstLoopTrades(market, data, file, timeStamp)
+                    firstLoopTrades(writer, market, data, file, timeStamp)
                 else:
-                    loopsTrades(market, data, file, timeStamp, count)
+                    loopsTrades(writer, market, data, file, timeStamp, count)
 
                 count += 1
 
-        print(marketLastTrades)
+        print('loop completed')
         firstLoop = False
 
 
 ################################################################################
-#
+# Guarda en una lista los mercados que se van a consultar
 ################################################################################
 def retrieveMarkets():
     global marketsList
@@ -91,16 +88,16 @@ def retrieveMarkets():
             marketsList.append(line.rstrip('\n'))
 
 ################################################################################
-#
+# Funcion main
 ################################################################################
 def main():
     retrieveMarkets()
     # para que el script de obtencion del historial funcione constantemente
-    # he puesto un while(true) y pa que no haya conflictos de datos
-    # despues de cada ejecucion se para durante 2 minutos
+    # he puesto un while(true) y para que no haya conflictos de datos
+    # despues de cada ejecucion se para durante 1 minutos
     while(1):
         retrieveMarketHistory()
-        time.sleep(10)
+        time.sleep(60)
 
 
 if __name__ == "__main__":
