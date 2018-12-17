@@ -63,5 +63,5 @@ La salida con los resultados del análisis se verá por la consola de Apache Spa
 Toda la contribución es bienvenida.
 
 
-## License
+## Licencia
 [GLP](https://choosealicense.com/licenses/gpl-3.0/)
