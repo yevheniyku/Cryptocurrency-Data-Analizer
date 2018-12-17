@@ -1,0 +1,172 @@
+<!DOCTYPE HTML>
+<!--
+	Spectral by HTML5 UP
+	html5up.net | @ajlkn
+	Free for personal and commercial use under the CCA 3.0 license (html5up.net/license)
+-->
+<html>
+	<head>
+		<title>Cloud & Big Data</title>
+		<meta charset="utf-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
+		<link rel="stylesheet" href="assets/css/main.css" />
+		<noscript><link rel="stylesheet" href="assets/css/noscript.css" /></noscript>
+	</head>
+	<body class="landing is-preload">
+
+		<!-- Page Wrapper -->
+			<div id="page-wrapper">
+					<!-- Header -->
+					<header id="header" class="alt">
+						<h1><a href="index.html">Cloud & Big Data</a></h1>
+						<nav id="nav">
+							<ul>
+								<li class="special">
+									<a href="#menu" class="menuToggle"><span>Menu</span></a>
+									<div id="menu">
+										<ul>
+											<li><a href="index.html">Home</a></li>
+											<li><a href="tabla.html">Tabla</a></li>
+										</ul>
+									</div>
+								</li>
+							</ul>
+						</nav>
+					</header>
+				<!-- Banner -->
+					<section id="banner">
+						<div class="inner">
+							<h2>Cloud & Big Data</h2>
+							<p>Estudio de mercado<br />
+							de compra-venta<br />
+							de cryptomonedas.</p>
+							<ul class="actions special"></ul>
+							<ul><a href="https://github.com/yevheniyku/Cryptocurrency-Data-Analizer" class="icon fa-github" style="font-size:48px; left: -1%"><span class="label">GitHub</span></a></ul>
+						</div>
+						<a href="#one" class="more scrolly">Hacia Abajo</a>
+					</section>
+
+				<!-- One -->
+					<section id="one" class="wrapper style1 special">
+						<div class="inner">
+							<header class="major">
+								<h2>¿Qué problema resolvemos?</h2>
+								<p>Queremos facilitar el trabajo a los posibles inversores analizando los volúmenes de compra/venta y precios de las criptomonedas en modo streaming.</p>
+							</header>
+							<ul class="icons major">
+								<li><span class="icon fa-bitcoin major style1"><span class="label">BTC</span></span></li>
+								<li><span class="icon fa-dollar major style2"><span class="label">BTC</span></span></li>
+								<li><span class="icon fa-btc major style3"><span class="label">BTC</span></span></li>
+							</ul>
+						</div>
+					</section>
+
+				<!-- Two -->
+					<section id="two" class="wrapper alt style2">
+						<section class="spotlight">
+							<div class="pic"><img src="images/pic01.jpg" alt="" /></div><div class="content">
+								<h2>Datos utilizados</h2>
+								<p>Bittrex es una casa de cambios (Exchange), que permite tanto invertir en criptomonedas, como seguir la evolución del mercado en vivo.</p>
+							</div>
+						</section>
+						<section class="spotlight">
+							<div class="poc" id="chartContainer"></div><div class="content">
+								<h2>¿Qué hemos creado?</h2>
+								<p>Hemos creado un script en Python que hace las consultas a la API pública por HTTPS con el método GET.<br />
+								Todas las respuestas contienen el código de respuesta, que indica si la consulta ha tenido éxito y, en tal caso, un objeto JSON con los datos consultados.</p>
+							</div>
+						</section>
+					</section>
+
+				<!-- Three -->
+					<section id="three" class="wrapper style3 special">
+						<div class="inner">
+							<header class="major">
+								<h2>Herramientas utilizadas</h2>
+							</header>
+							<ul class="features">
+								<li>
+									<h3>Bittrex API</h3><img class="bittrex" src="images/bittrex.png" alt="" />
+									<p>Nuestro script recopilará información de la API de Bittrex.</p>
+								</li>
+								<li>
+									<h3>Apache Spark</h3><img class="spark" src="images/spark.png" alt="" />
+									<p>Análisis de datos con módulo streaming.</p>
+								</li>
+								<li>
+									<h3>GitHub</h3><img class="github" src="images/GitHub.jpg" alt="" />
+									<p>Plataforma de GitHub para manejar el código de una manera mas ordenada.</p>
+								</li>
+								<li>
+									<h3>Amazon Web Services</h3><img class="amazon" src="images/amazon.png" alt="" />
+									<p>Proyecto alojado en un cluster de Amazon Web Services con GNU/LINUX como sistema operativo.</p>
+								</li>
+							</ul>
+						</div>
+					</section>
+				<!-- Footer -->
+					<footer id="footer">
+						<ul class="icons">
+							<li><a href="#" class="icon fa-github"><span class="label">GitHub</span></a></li>
+						</ul>
+						<ul class="copyright">
+							<li>Created by:</li><li><a href="https://github.com/esRueda"> Esteban Rueda </a></li><li><a href="https://github.com/Tellacus">Alejandro López-Tello</a></li><li><a href="https://github.com/yevheniyku/"> Yevheniy Kushch</a> | </li>
+						</ul>
+					</footer>
+
+			</div>
+
+		<!-- Scripts -->
+			<script src="assets/js/jquery.min.js"></script>
+			<script src="assets/js/jquery.scrollex.min.js"></script>
+			<script src="assets/js/jquery.scrolly.min.js"></script>
+			<script src="assets/js/browser.min.js"></script>
+			<script src="assets/js/breakpoints.min.js"></script>
+			<script src="assets/js/util.js"></script>
+			<script src="assets/js/main.js"></script>
+			<script type="text/javascript" src="https://canvasjs.com/assets/scriptjquery-1.11.1.min.js"></script>
+			<script src="https://canvasjs.com/assets/script/canvasjs.min.js"></script>
+				<script>
+					window.onload = function () {
+
+					var dataPoints = [];
+
+					var chart = new CanvasJS.Chart("chartContainer", {
+						animationEnabled: true,
+						exportEnabled: true,
+						title:{
+						text: "Currencies & Prices"
+						},
+						axisY: {
+						title: "In metric tons",
+						includeZero: false
+						},
+						data: [{
+						type: "column",
+						toolTipContent: "{y} metric tons",
+						dataPoints: dataPoints
+						}]
+						});
+
+						$.get("currency.csv", getDataPointsFromCSV);
+
+						//CSV Format
+						//Year,Volume
+						function getDataPointsFromCSV(csv) {
+						var csvLines = points = [];
+						csvLines = csv.split(/[\r?\n|\r|\n]+/);
+						for (var i = 0; i < csvLines.length; i++) {
+						if (csvLines[i].length > 0) {
+						points = csvLines[i].split(",");
+						dataPoints.push({
+						label: points[0],
+						y: parseFloat(points[1])
+						});
+						}
+						}
+						chart.render();
+						}
+						}
+				</script>
+	</body>
+</html>
