@@ -4,6 +4,13 @@ from pyspark.sql import Row,SQLContext
 import sys
 import requests
 
+################################################################################
+# Operations All Markets (Script 4)
+#
+# Calcula el tipo de operaciones que predominan en un mercado. Puede servir de
+# aviso en caso de que muchos inversores empiecen a vender monedas
+################################################################################
+
 def aggregate_count(new_values, total_sum):
     return sum(new_values) + (total_sum or 0)
 
@@ -15,15 +22,14 @@ def get_sql_context_instance(spark_context):
 def process(time, rdd):
     print("---- Top 10 markets by order type and number ---- %s ----" % str(time))
     try:
-        # Get spark sql singleton context from the current context
         sql_context = get_sql_context_instance(rdd.context)
-        # convert the RDD to Row RDD
+        # convertimos rdd en una fila
         row_rdd = rdd.map(lambda w: Row(market=w[0][0], op=w[0][1], num_ops=w[1]))
-        # create a DF from the Row RDD
+        # creamos un data frame
         numOperations_df = sql_context.createDataFrame(row_rdd)
-        # Register the dataframe as table
+        # registramos el data frame como una tabla
         numOperations_df.registerTempTable("markets_operations")
-        # get the top 10 hashtags from the table using SQL and print them
+        # sacamos top 10 de mercados con las ordenes y numero de operaciones
         numOperations_counts_df = sql_context.sql("select market, op, num_ops from markets_operations order by num_ops desc limit 10")
         numOperations_counts_df.show()
     except:
@@ -40,12 +46,13 @@ def numberOfOperations(dataStream):
 
 def main():
     conf = SparkConf()
-    conf.setAppName('DataAnalyzer')
+    conf.setAppName('OperationsAllMarkets')
     sc = SparkContext(conf=conf)
     sc.setLogLevel('ERROR')
     ssc = StreamingContext(sc, 20)
-    # setting a checkpoint to allow RDD recovery
-    ssc.checkpoint('checkpoint_DataAnalyzer')
+    # checkpoint para recuperar los RDD
+    ssc.checkpoint('checkpoint_operationsAllMarkets')
+    # utilizamos un socket para la entrada de datos
     dataStream = ssc.socketTextStream('localhost',9009)
 
     #operaciones sobre datos
@@ -53,9 +60,7 @@ def main():
     opNumTotals = opNum.updateStateByKey(aggregate_count)
     opNumTotals.foreachRDD(process)
 
-    # start the streaming computation
     ssc.start()
-    # wait for the streaming to finish
     ssc.awaitTermination()
 
 if __name__ == '__main__':

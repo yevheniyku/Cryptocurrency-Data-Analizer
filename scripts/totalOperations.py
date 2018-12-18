@@ -4,6 +4,14 @@ from pyspark.sql import Row,SQLContext
 import sys
 import requests
 
+################################################################################
+# Total Operations (Script 1)
+#
+# Calcula el total numero de operaciones de cada mercado, sacando los 10 más
+# importantes. Lo cual permite saber donde se mueve mas dinero en un momento
+# exacto
+################################################################################
+
 def aggregate_count(new_values, total_sum):
     return sum(new_values) + (total_sum or 0)
 
@@ -15,15 +23,14 @@ def get_sql_context_instance(spark_context):
 def process(time, rdd):
     print("---- Number of Operations ---- %s ----" % str(time))
     try:
-        # Get spark sql singleton context from the current context
         sql_context = get_sql_context_instance(rdd.context)
-        # convert the RDD to Row RDD
+        # convertimos rdd en fila
         row_rdd = rdd.map(lambda w: Row(market=w[0], num_operations=w[1]))
-        # create a DF from the Row RDD
+        # creamos un data frame de la fila rdd
         numOperations_df = sql_context.createDataFrame(row_rdd)
-        # Register the dataframe as table
+        # registramos el data frame como tabla
         numOperations_df.registerTempTable("num_operations_market")
-        # get the top 10 hashtags from the table using SQL and print them
+        # mostramos top 10 mercados por la cantidad de operaciones
         numOperations_counts_df = sql_context.sql("select market, num_operations from num_operations_market order by num_operations desc limit 10")
         numOperations_counts_df.show()
     except:
@@ -36,27 +43,23 @@ def numberOfOperations(dataStream):
     marketsOps = markets.map(lambda op: (op, 1))
     marketsOps = marketsOps.reduceByKey(lambda x, y: x + y)
 
-    #enviar rdd
     return marketsOps
 
 def main():
     conf = SparkConf()
-    conf.setAppName('DataAnalyzer')
+    conf.setAppName('TotalOperations')
     sc = SparkContext(conf=conf)
     sc.setLogLevel('ERROR')
     ssc = StreamingContext(sc, 20)
-    # setting a checkpoint to allow RDD recovery
-    ssc.checkpoint('checkpoint_DataAnalyzer')
-    dataStream = ssc.socketTextStream('localhost',9009)
+    ssc.checkpoint('checkpoint_TotalOperations')
+    dataStream = ssc.socketTextStream('localhost', 9009)
 
     #operaciones sobre datos
     opNum = numberOfOperations(dataStream)
     opNumTotals = opNum.updateStateByKey(aggregate_count)
     opNumTotals.foreachRDD(process)
 
-    # start the streaming computation
     ssc.start()
-    # wait for the streaming to finish
     ssc.awaitTermination()
 
 if __name__ == '__main__':
