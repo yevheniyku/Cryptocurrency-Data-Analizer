@@ -26,14 +26,18 @@ def process(time, rdd):
         # Get spark sql singleton context from the current context
         sql_context = get_sql_context_instance(rdd.context)
         # convert the RDD to Row RDD
-        row_rdd = rdd.map(lambda w: Row(market=w[0][0], op=w[0][1], last_price=op[0][2] num_ops=w[1]))
+        row_rdd = rdd.map(lambda w: Row(market=w[0][0], op=w[0][1], price=w[0][2], num_ops=w[1]))
         # create a DF from the Row RDD
         numOperations_df = sql_context.createDataFrame(row_rdd)
         # Register the dataframe as table
-        numOperations_df.registerTempTable("market_operations")
+        numOperations_df.registerTempTable("ops_by_market")
         # get the top 10 hashtags from the table using SQL and print them
-        numOperations_counts_df = sql_context.sql("select market, op, last_price, num_ops from markets_operations order by num_ops desc limit 10")
-        numOperations_counts_df.show()
+        buy_df = sql_context.sql("""select market, op, price, num_ops from ops_by_market
+                                        where op='BUY' order by num_ops desc limit 5""")
+        sell_df = sql_context.sql("""select market, op, price, num_ops from ops_by_market
+                                        where op='SELL' order by num_ops desc limit 5""")
+        buy_df.show()
+        sell_df.show()
     except:
         e = sys.exc_info()[0]
         print("Error: %s" % e)
