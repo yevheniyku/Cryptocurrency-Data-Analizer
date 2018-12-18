@@ -10,7 +10,7 @@ Listado de scripts de spark:
 - totalOperations.py: Calcula el total numero de operaciones de cada mercado, sacando los 10 más importantes.  
 - operationTypes.py:  Calcula la tendencia de compra o venta del mercado global en tiempo real.
 - operationsAllMarkets.py: Calcula el tipo de operaciones que predomina en cada mercado.
-- operationsByMarket.py: Calcula las operaciones de un solo mercado y muestra el último precio de la criptomoneda. (Es necesario indicar el mercado que queremos analizar).
+- operationsByMarket.py: Calcula las operaciones de un solo mercado y muestra el precio de la criptomoneda en cada operación. (Es necesario indicar el mercado que queremos analizar).
 - mediumPrice.py: Precio medio de una criptomoneda de las criptomonedas.
 
 ## Requisitos
@@ -55,13 +55,13 @@ python data_retriever.py
 
 En otra terminal ejecutar:
 ```bash
-spark-submit nombreDelScript
+spark-submit scripts/nombreDelScript
 ```
 
 Para el script __operationsByMarket.py__ es necesario indicar el mercado que se va a analizar. Por ejemplo:
 
 ```bash
-spark-submit operationByMarket.py USD-BTC
+spark-submit scripts/operationByMarket.py USD-BTC
 ```
 
 La salida con los resultados del análisis se verá por la consola de Apache Spark
