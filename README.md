@@ -11,7 +11,7 @@ Listado de scripts de spark:
 - operationTypes.py:  Calcula la tendencia de compra o venta del mercado global en tiempo real.
 - operationsAllMarkets.py: Calcula el tipo de operaciones que predomina en cada mercado.
 - operationsByMarket.py: Calcula las operaciones de un solo mercado y muestra el último precio de la criptomoneda. (Es necesario indicar el mercado que queremos analizar).
-- mediumPrice.py: Precio medio de una criptomoneda de un mercado.
+- mediumPrice.py: Precio medio de una criptomoneda de las criptomonedas.
 
 ## Requisitos
 - Sistema Operativo basado en GNU/Linux
@@ -48,7 +48,7 @@ Configuración de entorno: añadir '/usr/local/spark/bin' a PATH
 
 ## Uso
 
-Abrir dos terminales. En una ejecutar: 
+Abrir dos terminales. En una ejecutar:
 ```bash
 python data_retriever.py
 ```
