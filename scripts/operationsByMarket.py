@@ -23,15 +23,14 @@ def get_sql_context_instance(spark_context):
 def process(time, rdd):
     print("---- Market operations ---- %s ----" % str(time))
     try:
-        # Get spark sql singleton context from the current context
         sql_context = get_sql_context_instance(rdd.context)
-        # convert the RDD to Row RDD
+        # convertimos el RDD en una fila
         row_rdd = rdd.map(lambda w: Row(market=w[0][0], op=w[0][1], price=w[0][2], num_ops=w[1]))
-        # create a DF from the Row RDD
+        # creamos un data frame de una fila
         numOperations_df = sql_context.createDataFrame(row_rdd)
-        # Register the dataframe as table
+        # registramos la tabla del data frame
         numOperations_df.registerTempTable("ops_by_market")
-        # get the top 10 hashtags from the table using SQL and print them
+        # mostramos las ultimas 5 ordenes de compra y venta
         buy_df = sql_context.sql("""select market, op, price, num_ops from ops_by_market
                                         where op='BUY' order by num_ops desc limit 5""")
         sell_df = sql_context.sql("""select market, op, price, num_ops from ops_by_market
@@ -66,9 +65,7 @@ def main():
     opNumTotals = opNum.updateStateByKey(aggregate_count)
     opNumTotals.foreachRDD(process)
 
-    # start the streaming computation
     ssc.start()
-    # wait for the streaming to finish
     ssc.awaitTermination()
 
 if __name__ == '__main__':
