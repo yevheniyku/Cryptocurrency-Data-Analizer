@@ -1,5 +1,11 @@
 # Cryptocurrency Data Analyzer
 
+<p align="center">
+  <span>Language:</span> 
+  <a href="https://github.com/yevheniyku/Cryptocurrency-Data-Analizer">Español</a> |
+  <a href="https://github.com/yevheniyku/Cryptocurrency-Data-Analizer/blob/master/english.md">English</a> 
+</p>
+
 Cryptocurrency Data Analyzer (CDA) es un sistema que analiza grandes volumenes de datos en tiempo real. Estos datos, provienen de la API pública de Bittrex, y para analizarlos se utilizan algoritmos y tecnologías de Big Data.
 
 CDA consiste de dos partes:
