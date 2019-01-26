@@ -73,7 +73,7 @@ spark-submit scripts/operationByMarket.py USD-BTC
 The output with the results of the analysis will be seen by the Apache Spark console
 
 ## Contribution
-All the contribution is welcome.
+All the contributions are welcome.
 
 
 ## License
